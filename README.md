@@ -1,2 +1,2 @@
 # llt
-LLT Framework for Java Integration Tests
+LLT is a integration test framework for spring apps.
