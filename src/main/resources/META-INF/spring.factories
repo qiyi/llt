@@ -1,0 +1,5 @@
+org.isouth.llt.bootstrap.BootstrapConfiguration=\
+  org.isouth.llt.db.DBConfiguration
+
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+  org.isouth.llt.db.DBConfiguration
