@@ -12,3 +12,6 @@ It provides some embedded component while running junit4/5 test cases including:
   * embedded redis for cache usage.
   * embedded kafka for message queue.
   * embedded cassandra for no sql.
+  
+## Maven
+The artifact is uploaded to : https://oss.sonatype.org/content/repositories/snapshots/org/isouth/llt/1.0-SNAPSHOT/ 
