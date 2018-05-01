@@ -41,7 +41,7 @@ public class DBService {
 
     public void init() throws ManagedProcessException, InterruptedException, ExecutionException {
         // create and start db
-        DB db = DB.newEmbeddedDB(DBConfigurationBuilder.newBuilder().setPort(port).build());
+        this.db = DB.newEmbeddedDB(DBConfigurationBuilder.newBuilder().setPort(port).build());
         db.start();
 
         // create databases and execute sql files
