@@ -1,8 +1,9 @@
-package org.isouth.llt.web;
+package org.isouth.llt.tomcat;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.StandardRoot;
+import org.apache.tomcat.util.scan.StandardJarScanFilter;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.isouth.llt.bootstrap.Bootstrap;
 import org.isouth.llt.bootstrap.BootstrapConfiguration;
@@ -31,13 +32,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * {@link WebLoader} used with {@link org.springframework.test.context.ContextConfiguration} and without
- * spring boot, The loader will create embedded web.
+ * {@link TomcatLoader} used with {@link org.springframework.test.context.ContextConfiguration} and without
+ * spring boot, The loader will create embedded tomcat.
  *
  * @author qiyi
  * @since 1.0
  */
-public class WebLoader extends AbstractContextLoader {
+public class TomcatLoader extends AbstractContextLoader {
     @Override
     public void processContextConfiguration(ContextConfigurationAttributes configAttributes) {
         super.processContextConfiguration(configAttributes);
@@ -66,9 +67,9 @@ public class WebLoader extends AbstractContextLoader {
                 mergedConfig.getPropertySourceProperties());
 
         // prepare webapp configuration
-        int port = bootstrapEnvironment.getProperty("llt.web.port", int.class, 8080);
-        String contextPath = bootstrapEnvironment.getProperty("llt.web.contextPath", "");
-        String docBase = bootstrapEnvironment.getProperty("llt.web.docBase", "src/main/webapp");
+        int port = bootstrapEnvironment.getProperty("llt.tomcat.port", int.class, 8080);
+        String contextPath = bootstrapEnvironment.getProperty("llt.tomcat.contextPath", "");
+        String docBase = bootstrapEnvironment.getProperty("llt.tomcat.docBase", "src/main/webapp");
         File docBaseDir = new File(docBase);
         if (!docBaseDir.exists() || !docBaseDir.isDirectory()) {
             docBaseDir = createTempDocBase(port);
@@ -79,10 +80,13 @@ public class WebLoader extends AbstractContextLoader {
         tomcat.setPort(port);
         Context context = tomcat.addWebapp(contextPath, docBaseDir.getAbsolutePath());
         context.setResources(new StandardRoot(context));
-        context.setTldValidation(bootstrapEnvironment.getProperty("llt.web.tldValidation", boolean.class, false));
+        context.setTldValidation(bootstrapEnvironment.getProperty("llt.tomcat.tldValidation", boolean.class, false));
         StandardJarScanner jarScanner = new StandardJarScanner();
-        jarScanner.setScanClassPath(bootstrapEnvironment.getProperty("llt.web.scanClassPath", boolean.class, true));
-        jarScanner.setScanManifest(bootstrapEnvironment.getProperty("llt.web.scanManifest", boolean.class, false));
+        jarScanner.setScanClassPath(bootstrapEnvironment.getProperty("llt.tomcat.scanClassPath", boolean.class, true));
+        jarScanner.setScanManifest(bootstrapEnvironment.getProperty("llt.tomcat.scanManifest", boolean.class, false));
+        StandardJarScanFilter scanFilter = new StandardJarScanFilter();
+        scanFilter.setDefaultTldScan(bootstrapEnvironment.getProperty("llt.tomcat.tldScan", boolean.class, false));
+        jarScanner.setJarScanFilter(scanFilter);
         context.setJarScanner(jarScanner);
 
         Set<Class<? extends ApplicationContextInitializer<?>>> contextInitializerClasses = new HashSet<>(
@@ -95,11 +99,11 @@ public class WebLoader extends AbstractContextLoader {
         context.addParameter(ContextLoader.GLOBAL_INITIALIZER_CLASSES_PARAM, String.join(",", initializerNames));
 
         // TODO support custom connector for some ssl sense
-        // TODO support servlet annotations while no web.xml supplied
+        // TODO support servlet annotations while no tomcat.xml supplied
         // TODO add shutdown hook and listener for close event from the application context
         tomcat.start();
 
-        // return the web application context
+        // return the tomcat application context
         ServletContext servletContext = context.getServletContext();
         return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
     }
