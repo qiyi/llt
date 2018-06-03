@@ -1,4 +1,4 @@
-package org.isouth.llt.db;
+package org.isouth.llt.etcd;
 
 import org.springframework.cloud.bootstrap.BootstrapConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 @BootstrapConfiguration
 @Configuration
-@Conditional(DBCondition.class)
-public class DBConfiguration {
+@Conditional(EtcdCondition.class)
+public class EtcdConfiguration {
 
     @Bean
-    public DBService dbService() {
-        return new DBService();
+    public EtcdService etcdService() {
+        return new EtcdService();
     }
 }

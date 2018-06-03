@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StopWatch;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +41,7 @@ public class DBService {
 
     private DB db;
 
+    @PostConstruct
     public void init() throws ManagedProcessException, InterruptedException, ExecutionException {
         // create and start db
         this.db = DB.newEmbeddedDB(DBConfigurationBuilder.newBuilder().setPort(port).build());
@@ -81,6 +84,7 @@ public class DBService {
         logger.info("DBService init cost:{}ms", sw.getTotalTimeMillis());
     }
 
+    @PreDestroy
     public void destroy() throws ManagedProcessException {
         if (db != null) {
             db.stop();

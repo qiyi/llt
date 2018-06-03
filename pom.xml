@@ -40,6 +40,8 @@
         <tomcat.version>9.0.7</tomcat.version>
         <mariadb4j.version>2.2.3</mariadb4j.version>
         <flyway.version>5.0.7</flyway.version>
+        <otj.etcd.version>3.0.13-OT-1</otj.etcd.version>
+        <etcd4j.version>2.15.0</etcd4j.version>
     </properties>
 
     <dependencies>
@@ -98,6 +100,19 @@
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <!-- embedded etcd -->
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-etcd-embedded</artifactId>
+            <version>${otj.etcd.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mousio</groupId>
+            <artifactId>etcd4j</artifactId>
+            <version>${etcd4j.version}</version>
         </dependency>
     </dependencies>
 
