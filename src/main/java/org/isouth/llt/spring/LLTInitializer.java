@@ -23,10 +23,10 @@ import java.util.Map;
  * @since 1.0
  */
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
-public class LLTInitializer<C extends ConfigurableApplicationContext> implements ApplicationContextInitializer<C> {
+public class LLTInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
-    public void initialize(C configurableApplicationContext) {
+    public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
         ConfigurableEnvironment environment = configurableApplicationContext.getEnvironment();
         ConfigurableApplicationContext bootstrapContext = Bootstrap.create(environment.getActiveProfiles());
         bootstrapContext.registerShutdownHook();
