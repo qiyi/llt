@@ -1,6 +1,7 @@
 package org.isouth.llt.tomcat;
 
 import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleState;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.tomcat.util.scan.StandardJarScanFilter;
@@ -11,6 +12,7 @@ import org.isouth.llt.spring.LLTInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
@@ -89,6 +91,9 @@ public class TomcatLoader extends AbstractContextLoader {
         jarScanner.setJarScanFilter(scanFilter);
         context.setJarScanner(jarScanner);
 
+        // configure profiles and initializer classes
+        context.addParameter(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME,
+                String.join(",", mergedConfig.getActiveProfiles()));
         Set<Class<? extends ApplicationContextInitializer<?>>> contextInitializerClasses = new HashSet<>(
                 mergedConfig.getContextInitializerClasses());
         contextInitializerClasses.add(LLTInitializer.class);
@@ -102,6 +107,11 @@ public class TomcatLoader extends AbstractContextLoader {
         // TODO support servlet annotations while no tomcat.xml supplied
         // TODO add shutdown hook and listener for close event from the application context
         tomcat.start();
+
+        // check if the web app start successfully
+        if (context.getState() != LifecycleState.STARTED) {
+            throw new IllegalStateException("Webapp started failed");
+        }
 
         // return the tomcat application context
         ServletContext servletContext = context.getServletContext();
