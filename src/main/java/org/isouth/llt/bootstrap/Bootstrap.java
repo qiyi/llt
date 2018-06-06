@@ -81,6 +81,7 @@ public class Bootstrap {
         bootstrapPropertySources.remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
         CompositePropertySource bootstrapPropertySource = new CompositePropertySource("bootstrap");
         bootstrapPropertySources.forEach(bootstrapPropertySource::addPropertySource);
+        bootstrapContext.getEnvironment().getPropertySources().addLast(bootstrapPropertySource);
 
         ClassLoader classLoader = bootstrapContext.getClassLoader();
         List<String> names = SpringFactoriesLoader
