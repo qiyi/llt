@@ -25,6 +25,7 @@ public class LLTInitializer implements ApplicationContextInitializer<Configurabl
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
         ConfigurableEnvironment environment = configurableApplicationContext.getEnvironment();
         ConfigurableApplicationContext bootstrapContext = Bootstrap.create(environment.getActiveProfiles());
+        bootstrapContext.registerShutdownHook();
         configurableApplicationContext.setParent(bootstrapContext);
         Map<String, ApplicationContextInitializer> initializerMap = bootstrapContext.getBeansOfType(ApplicationContextInitializer.class);
         ArrayList<ApplicationContextInitializer> initializerList = new ArrayList<>(initializerMap.values());
